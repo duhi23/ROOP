@@ -44,8 +44,8 @@ class(glmD93)
 ## Creando métodos y funciones genéricas
 
 # Para agregar un nuevo genérico, creamos una función que llame a "UseMethod". UseMethod toma dos argumentos: 
-# 1) el nombre de la función genérica, 2) argumento que utiliza para el método de envío. Si se omite el segundo
-# argumento se enviará en el primer argumento de la función.
+# 1) el nombre de la función genérica, 2) argumento que utiliza para el método de exploración. Si se omite el 
+# segundo argumento se enviará en el primer argumento de la función.
 
 f <- function(x) UseMethod("f")
 f.Diego <- function(x) "Clase Diego"
@@ -176,7 +176,20 @@ class(oneCoin) <- "Coin"
 simulateGeometric(oneCoin, TRUE)
 simulateGeometric(oneCoin, FALSE)
 
-## Método Dispatch (Expedición - Envío)
+
+## Método de exploración
+
+# El método de exploración es relativamente simple, pues UseMethod crea un vector de nombres de funciones:
+# paste0("generic", ".", c(class(x), "default")), en el cual busca en cada ejecución. La clase "default" 
+# permite configurar una caida del método ante clases desconocidas
+
+f <- function(x) UseMethod("f")
+f.Diego <- function(x) "Class Diego"
+f.default <- function(x) "Class desconocida"
+
+f(structure(list(), class = "Diego"))
+f(structure(list(), class = c("Paul", "Diego")))
+f(structure(list(), class = "Paul"))
 
 
 
