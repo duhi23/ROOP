@@ -358,4 +358,10 @@ mtcars %>% ggvis(~wt, ~mpg, fill = ~disp) %>%
       scale_numeric("y", domain = c(0, NA)) %>%
       scale_numeric("x", domain = c(0, 6))
 
+# Set the fill value to the color variable instead of mapping it, and see what happens
+mtcars$color <- c("red", "teal", "#cccccc", "tan")
+mtcars %>% ggvis(x = ~wt, y = ~mpg, fill = ~color) %>% layer_points()
 
+# Set the fill value to the color variable instead of mapping it, and see what happens
+mtcars$color <- c("red", "teal", "#cccccc", "tan")
+mtcars %>% ggvis(x = ~wt, y = ~mpg, fill := ~color) %>% layer_points()
