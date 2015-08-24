@@ -308,3 +308,54 @@ faithful %>%
       add_legend(c("fill", "shape", "size"), 
                  title = "~ duration (m)", values = c(2, 3, 4, 5))
 
+# Add to the first chunk of code to make the stroke color range from “darkred” to “orange”.
+mtcars %>% 
+      ggvis(~wt, ~mpg, fill = ~disp, stroke = ~disp, strokeWidth := 2) %>%
+      layer_points() %>%
+      scale_numeric("fill", range = c("red", "yellow"))
+
+mtcars %>% 
+      ggvis(~wt, ~mpg, fill = ~disp, stroke = ~disp, strokeWidth := 2) %>%
+      layer_points() %>%
+      scale_numeric("fill", range = c("red", "yellow")) %>%
+      scale_numeric("stroke", range = c("darkred", "orange"))
+
+# Change the graph below to make the fill colors range from green to beige.
+mtcars %>% ggvis(~wt, ~mpg, fill = ~hp) %>%
+      layer_points()
+      
+mtcars %>% ggvis(~wt, ~mpg, fill = ~hp) %>%
+      layer_points() %>%
+      scale_numeric("fill", range = c("green", "beige"))
+
+# The third code chunk on the right maps a categorical (e.g., nominal variable) to fill. Create a scale 
+# that will map factor(cyl) to a new range of colors: purple, blue, and green. Since factor(cyl) has 
+# three unique values, the range of your scale will need three unique color names.
+mtcars %>% ggvis(~wt, ~mpg, fill = ~factor(cyl)) %>%
+      layer_points()
+
+mtcars %>% ggvis(~wt, ~mpg, fill = ~factor(cyl)) %>%
+      layer_points() %>%
+      scale_nominal("fill", range = c("purple", "blue", "green"))
+
+# Consider the first code chunk in the editor. Add a scale that limits the range of opacity from 0.2 to 1. 
+# Be sure to consider whether hp is a datetime, logical, nominal, numeric, or singular value.
+mtcars %>% ggvis(x = ~wt, y = ~mpg, fill = ~factor(cyl), opacity = ~hp) %>%
+      layer_points()
+
+mtcars %>% ggvis(x = ~wt, y = ~mpg, fill = ~factor(cyl), opacity = ~hp) %>%
+      layer_points() %>%
+      scale_numeric("opacity", range = c(0.2, 1))
+
+# Read the code for the second graph carefully. Add a second scale that will expand the x axis to cover 
+# data values from 0 to 6.
+mtcars %>% ggvis(~wt, ~mpg, fill = ~disp) %>%
+      layer_points() %>%
+      scale_numeric("y", domain = c(0, NA))
+
+mtcars %>% ggvis(~wt, ~mpg, fill = ~disp) %>%
+      layer_points() %>%
+      scale_numeric("y", domain = c(0, NA)) %>%
+      scale_numeric("x", domain = c(0, 6))
+
+
