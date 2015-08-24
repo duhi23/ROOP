@@ -162,4 +162,149 @@ mtcars %>%
       layer_points()
 
 
+# Change the radiobuttons widget in the first command on the right to a text widget that displays the 
+# initial value "black". The wanted resulting plot can be found here.
+mtcars %>% 
+      ggvis(~mpg, ~wt, 
+            fill := input_text(label = "Choose color", value = "black")) %>% 
+      layer_points()
+
+# In the second graph on the right, map fill to a select box that returns variable names. The select 
+# box should use the label "Choose fill variable:" and should offer the choices created by names(mtcars), 
+# as shown here. Use the map argument inside input_select() to map the selection instead of setting it.
+mtcars %>% 
+      ggvis(~mpg, ~wt, 
+            fill = input_select(label = "Choose fill variable:", 
+                                choices = names(mtcars), map = as.name)) %>% 
+      layer_points()
+
+
+# Map the bindwidth to a numeric field ("Choose a binwidth:")
+mtcars %>% 
+      ggvis(~mpg) %>% 
+      layer_histograms(width = 2)
+
+mtcars %>% 
+      ggvis(~mpg) %>% 
+      layer_histograms(width = input_numeric(1, label = "Choose a binwidth:"))
+
+# Map the binwidth to a slider bar ("Choose a binwidth:") with the correct specifications
+mtcars %>% 
+      ggvis(~mpg) %>% 
+      layer_histograms(width = input_slider(1, 20, value = 11, label="Choose a binwidth:"))
+
+
+# Add a layer of points to the graph below.
+pressure %>% 
+      ggvis(~temperature, ~pressure, stroke := "skyblue") %>% 
+      layer_lines()
+
+pressure %>% 
+      ggvis(~temperature, ~pressure, stroke := "skyblue") %>% 
+      layer_lines() %>% layer_points()
+
+# Copy and adapt the solution to the first instruction below so that only the lines layer uses a skyblue stroke.
+pressure %>% 
+      ggvis(~temperature, ~pressure, stroke := "skyblue") %>% 
+      layer_points()         
+
+# Rewrite the code below so that only the points layer uses the shape property.
+pressure %>% 
+      ggvis(~temperature, ~pressure) %>% 
+      layer_lines(stroke := "skyblue") %>% 
+      layer_points(shape := "triangle-up")
+
+# Refactor the code for the graph below to make it as concise as possible
+pressure %>% 
+      ggvis(~temperature, ~pressure, stroke := "skyblue", strokeOpacity := 0.5, strokeWidth := 5) %>% 
+      layer_lines(~temperature, ~pressure, stroke := "skyblue", strokeOpacity := 0.5, strokeWidth := 5) %>% 
+      layer_points(~temperature, ~pressure,fill = ~factor(temperature), strokeOpacity := 0.5, 
+                   shape := "triangle-up", stroke := "skyblue", size := 300, strokeWidth := 5)
+
+pressure %>% 
+      ggvis(~temperature, ~pressure, stroke := "skyblue", strokeOpacity := 0.5, strokeWidth := 5) %>% 
+      layer_lines() %>% 
+      layer_points(fill = ~factor(temperature), 
+                   shape := "triangle-up", size := 300)
+
+# Create a graph containing a scatterplot, a linear model and a smooth line.
+# Create a scatterplot of the pressure data set that has the temperature variable on the x axis and the 
+# pressure variable on the y axis. Connect the points with a black line that has 50% opacity. Then add 
+# a linear model line to the data that is navy in color. Then add a smooth line that is skyblue in color.
+
+pressure %>% ggvis(~temperature, ~pressure) %>% layer_points() %>% 
+      layer_lines(stroke:="black", opacity := 0.5) %>% layer_model_predictions(model = "lm", stroke := "navy") %>%
+      layer_smooths(stroke:="skyblue")
+
+# 5) Customizing Axes, Legends
+
+# The code for the first graph on the right changes the title of the Y axis to “Duration of eruption (m)”. 
+# Add to the code to change the title of the x axis to “Time since previous eruption (m)”.
+
+faithful %>% 
+      ggvis(~waiting, ~eruptions) %>% 
+      layer_points() %>% 
+      add_axis("y", title = "Duration of eruption (m)")
+
+faithful %>% 
+      ggvis(~waiting, ~eruptions) %>% 
+      layer_points() %>% 
+      add_axis("y", title = "Duration of eruption (m)") %>%
+      add_axis("x", title = "Time since previous eruption (m)")
+
+# The second code chunk places a labelled tick mark at each integer on the y axis and then inserts nine 
+# subdividing tickmarks between each integer. Add to the code to place a labelled tick mark at 50, 60, 
+# 70, 80, 90 on the x axis. Place nine subdividing tick marks between each labelled tick mark.
+faithful %>% 
+      ggvis(~waiting, ~eruptions) %>% 
+      layer_points() %>% 
+      add_axis("y", title = "Duration of eruption (m)", 
+               values = c(2, 3, 4, 5), subdivide = 9) %>% 
+      add_axis("x", title = "Time since previous eruption (m)")
+
+faithful %>% 
+      ggvis(~waiting, ~eruptions) %>% 
+      layer_points() %>% 
+      add_axis("y", title = "Duration of eruption (m)", 
+               values = c(2, 3, 4, 5), subdivide = 9) %>% 
+      add_axis("x", title = "Time since previous eruption (m)",
+               values = c(50, 60, 70, 80, 90), subdivide = 9)
+
+# Change the sample code for the last graph: move the y axis to the right side of the plot. Move the x 
+# axis to the top of the plot.
+faithful %>% 
+      ggvis(~waiting, ~eruptions) %>% 
+      layer_points() %>%
+      add_axis("y", orient = "right") %>%
+      add_axis("x", orient = "top")
+
+
+# Use add_legend() to change the title of the legend in the first plot on the right to “~ duration (m)” 
+# and to orient the legend to the left side of the graph.
+faithful %>% 
+      ggvis(~waiting, ~eruptions, opacity := 0.6, 
+            fill = ~factor(round(eruptions))) %>% 
+      layer_points()
+
+faithful %>% 
+      ggvis(~waiting, ~eruptions, opacity := 0.6, 
+            fill = ~factor(round(eruptions))) %>% 
+      layer_points() %>%
+      add_legend("fill", title = "~ duration (m)", orient = "left")
+
+# Use add_legend() to combine the legends in the second plot. Also set the legend title to “~ duration (m)” 
+# and specify that only the values 2, 3, 4, and 5 should receive a labelled symbol.
+faithful %>% 
+      ggvis(~waiting, ~eruptions, opacity := 0.6, 
+            fill = ~factor(round(eruptions)), shape = ~factor(round(eruptions)), 
+            size = ~round(eruptions))  %>%
+      layer_points()
+
+faithful %>% 
+      ggvis(~waiting, ~eruptions, opacity := 0.6, 
+            fill = ~factor(round(eruptions)), shape = ~factor(round(eruptions)), 
+            size = ~round(eruptions)) %>% 
+      layer_points() %>% 
+      add_legend(c("fill", "shape", "size"), 
+                 title = "~ duration (m)", values = c(2, 3, 4, 5))
 
