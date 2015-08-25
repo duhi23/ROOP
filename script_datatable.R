@@ -109,5 +109,158 @@ DT[,.SD[-1], by=grp, .SDcols=paste0("Q",1:3)]
 
 
 
+# The data.table DT is loaded in your workspace
+desired_result_1
+desired_result_2
+
+# Sum of all columns and the number of rows
+DT[, c(lapply(.SD, sum), .N), by=x, .SDcols=c("x", "y", "z")]
+
+# Cumulative sum of column `x` and `y` while grouping by `x` and `z > 8`
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
+
+# Chaining
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
+
+
+
+# The data.table DT is loaded in your workspace
+desired_result_1
+desired_result_2
+
+# Sum of all columns and the number of rows
+DT[, c(lapply(.SD, sum), .N), by=x, .SDcols=c("x", "y", "z")]
+
+# Cumulative sum of column `x` and `y` while grouping by `x` and `z > 8`
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
+
+# Chaining
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
+
+
+
+# The data.table DT is loaded in your workspace
+desired_result_1
+desired_result_2
+
+# Sum of all columns and the number of rows
+DT[, c(lapply(.SD, sum), .N), by=x, .SDcols=c("x", "y", "z")]
+
+# Cumulative sum of column `x` and `y` while grouping by `x` and `z > 8`
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
+
+# Chaining
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
+
+
+set.seed(1)
+
+# Check the DT that is made available to you
+DT
+
+# For loop with set
+for (j in 2:4) {set(DT, j=j, i = sample(1:10, size=3), value = NA)}
+
+# Change the column names to lowercase
+setnames(DT, names(DT), tolower(names(DT)))
+
+# Print the new DT to the console so we can check your answer
+DT
+
+
+DT <- data.table(a=letters[c(1,1,1,2,2)], b=1)
+
+# Postfix "_2"
+setnames(DT, names(DT), paste0(names(DT), "_2"))
+
+# "a_2" to "A2"
+setnames(DT, "a_2", "A2")
+
+# Reversing order
+setcolorder(DT, c("b_2", "A2"))
+
+
+DT <- data.table(a=letters[c(1,1,1,2,2)], b=1)
+
+# Postfix "_2"
+setnames(DT, names(DT), paste0(names(DT), "_2"))
+
+# "a_2" to "A2"
+setnames(DT, "a_2", "A2")
+
+# Reversing order
+setcolorder(DT, c("b_2", "A2"))
+
+
+# The data.table iris is already loaded in your workspace
+iris
+
+# Area is greater than 20 square centimeters
+iris[Length*Width > 20]
+
+# Add new boolean column
+iris[,IsLarge:=Length*Width > 20]
+
+# Now select rows again where the area is greater than 20 square centimeters
+iris[IsLarge==TRUE]
+
+
+# This is your data.table `DT`. The keys are set to `A` and `B`
+DT <- data.table(A=letters[c(2,1,2,3,1,2,3)], B=c(5,4,1,9,8,8,6), C=6:12)
+setkey(DT,A,B)
+
+# Select the `b` group
+DT["b"] 
+
+# `b` and `c` groups
+DT[c("b","c")]
+
+# The first row of the `b` and `c` group
+DT[c("b","c"), mult="first"]
+
+# `by=.EACHI` and `.SD` 
+DT[c("b","c"), .SD[c(1,.N)], by=.EACHI]
+
+# Print out all the data in the two groups before you return the first and last row of each group again.  Use {} and .N 
+DT[c("b","c"), {print(.SD);.SD[c(1,.N)]}, by=.EACHI]
+
+
+# The data.table DT is still loaded in your workspace
+library("data.table")
+
+# Key of `DT`
+key(DT)
+
+# Row where  `A=="b"` & `B==6`
+DT[.("b",6)]
+
+# Return the prevailing row
+DT[.("b",6), roll=TRUE]
+
+# Nearest one
+DT[.("b",6), roll="nearest"]
+
+
+# The data.table DT is still loaded in your workspace
+
+
+# Look at the sequence (-2):10 for the `b` group
+DT[.("b",(-2):10)]
+
+# Carry the prevailing values forwards
+DT[.("b",(-2):10),  roll=TRUE]
+
+# Carry the first observation backwards
+DT[.("b",(-2):10), roll=TRUE, rollends=TRUE]
+# or
+DT[.("b",(-2):10), roll = TRUE, rollends= c(TRUE,TRUE)]
+
+# Roll for a distance of 2
+DT[.("b",(-2):10), roll=2]
+
+
+
+
+
 
 
