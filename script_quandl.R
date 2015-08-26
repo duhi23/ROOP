@@ -71,3 +71,53 @@ str(results)
 # variable BitCoin.
 BitCoin <- Quandl("BCHAIN/TOTBC")
 
+# In this second and final chapter you will have a look at how you can manipulate Quandl's datasets before you 
+# start working with them.
+# The Quandl() function has two arguments start_date and end_date, that can be used to specify the time range 
+# of the data to load. The format to specify the date is: yyyy-mm-dd.
+
+# Assign to the variable Exchange the USD/EUR exchange rate from January 1st 2013 up to December 1st 2013. 
+# The code to pass to the Quandl() function is "BNP/USDEUR".
+Exchange <- Quandl("BNP/USDEUR", start_date="2013-01-01", end_date="2013-12-01")
+
+# Quandl can transform your data before serving it. You can set the transformation argument to:
+# "diff"
+# "rdiff"
+# "cumul", and
+# "normalize".
+# Have a look at the Quandl API documentation to see what these options actually do.
+
+# You want to know the Canadian GDP annual percent change. Use the rdiff transformation and assign the result 
+# to GDP_Change. Use the code "FRED/CANRGDPR"; more information can be found on Quandl's website.
+GDP_Change <- Quandl("FRED/CANRGDPR", transformation="rdiff")
+
+# You don't always need every available data tick for your analysis. Sometimes having the data available on 
+# a daily or weekly base is sufficient. By altering the collapse parameter you can easily indicate the desired 
+# frequency. The available options are: none|daily|weekly|monthly| quarterly|annual
+# Quandl returns the last observation for the given period. So, if you collapse a daily dataset to “monthly”, 
+# you will get a sample of the original dataset where the observation for each month is the last data point 
+# available for that month.
+
+# Get crude oil prices on a quarterly basis from the EIA's daily spot price (DOE/RWTC) and assign these to the 
+# variable eiaQuarterly.
+eiaQuarterly <- Quandl("DOE/RWTC", collapse="quarterly")
+
+# Two other arguments of the Quandl() function are rows and sort.
+# The meaning of sort is straightforward, and by default it is set on descending.
+# The rows argument on the other hand allows you to get only the first n rows of your query. For example, you 
+# can use rows=1 to get the latest observation of any dataset.
+
+# You only want the first 5 observations of the crude oil prices from the EIA (DOE/RWTC) in an ascending order. 
+# The result should be assigned to TruSo.
+TruSo <- Quandl("DOE/RWTC", rows=5, sort="asc")
+TruSo
+
+
+# For this final exercise you will be really challenged. This time you need to combine multiple parameters to 
+# show you are worthy of calling yourself a true Quandl expert.
+# You want to have the daily percent change in oil prices from January 2005 to March 2010, in ascending order.
+
+Final <- Quandl("DOE/RWTC", start_date = "2005-01-01", end_date = "2010-03-01", 
+                sort = "asc", transformation = "rdiff")
+
+
