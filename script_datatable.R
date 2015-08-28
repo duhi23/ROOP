@@ -102,7 +102,81 @@ DT2 <- DT[, .(C=cumsum(C)), by=.(A,B)]
 # won't change.
 DT2[, .(C=tail(C,2)), by=A] 
 
+
 # 2) Yeoman
+
+# Now that you are comfortable with data.table's DT[i, j, by] syntax, it is time to practice some other very 
+# useful concepts in data.table as well. Here, you will have a more detailed look at chaining.
+# Chaining allows concatenating multiple operations and follows because the operations are in the same order. 
+# Furthermore, it helps to avoid the creation of unnecessary temporary variables (which could quickly clutter 
+# one's workspace).
+
+set.seed(1L)
+DT <- data.table(A=rep(letters[2:1], each=4L), B=rep(1:4, each=2L), C=sample(8)) 
+
+# In the previous section, you calculated DT2 by taking the cumulative sum of C while grouping by A,B. Next, 
+# you selected from DT2 the last two values of C while grouping by A alone. Do this again, but this time use 
+# the concept of chaining instead. Simply print the result of the chaining.
+DT[,.(C = cumsum(C)), by=.(A,B)][,.(C=tail(C,2)),by=A]
+
+# In the previous exercise you converted the iris dataset to data.table DT. That DT is now loaded in your 
+# workspace. Check this first via the console. Let us see how you can use chaining to simplify manipulations 
+# and calculations with the DT data.table.
+
+# Get the median of all the four columns Sepal.Length, Sepal.Width, Petal.Length and Petal.Width while you 
+# group by Species. Give them the same names. Next, order Species in descending order using chaining.
+DT <- data.table(iris)
+DT[, .(Sepal.Length=median(Sepal.Length), Sepal.Width=median(Sepal.Width), Petal.Length=median(Petal.Length), 
+       Petal.Width=median(Petal.Width)), by=Species][order(Species, decreasing = TRUE)]
+
+# It is a good idea to make use of familiar functions from base R to reduce programming time without losing 
+# readability.
+# The data.table package provides a special in-built variable .SD. It refers to the subset of data for each group.
+
+# Get the mean of columns y and z grouped by x by using .SD.
+DT[, lapply(.SD, mean), by=x]
+
+# Get the median of columns y and z grouped by x by using .SD.
+DT[, lapply(.SD, median), by=x]
+
+# .SDcols specifies the columns of DT that are included in .SD. Using .SDcols comes in handy if you have too 
+# many columns and you want to perform a particular operation on a particular subset of the columns (apart 
+# from the grouping variable columns).
+# While using data.table, you may find yourself looking back to the documentation. Have a look at ?data.table 
+# for more info on .SDcols.
+
+# Calculate the sum of the Q columns using .SD and .SDcols. Use 2:4.
+DT[, lapply(.SD, sum), .SDcols=2:4]
+
+# You can of course set .SDcols to be the result of a function call. This time calculate the sum of columns H1 
+# and H2 using paste0().
+DT[,lapply(.SD,sum), .SDcols=paste0("H",1:2)]
+
+# Finally, select all but the first row of the groups names 6 and 8, returning only the grp column and the Q 
+# columns. Use -1 in i of .SD and use paste0() again. Type desired_result to better understand what you need to do.
+DT[,.SD[-1], by=grp, .SDcols=paste0("Q",1:3)]
+
+# The final exercise of this section is a challenging one, so do not give up too soon! It is important to 
+# remember that lapply() and .SD return a list, and that .N is an inbuilt variable that returns an integer 
+# vector of length 1. If j returns a list then a data.table is returned. To combine items together you already 
+# know to use c(). Combining a list with a vector makes a new list one longer. When you select .N on its own, 
+# it automatically gets named N in the output for convenience when chaining.
+
+# Get the sum of all columns x, y and z and the number of rows in each group while grouping by x. Your answer 
+# should be identical to the result stored in desired_result_1.
+DT[, c(lapply(.SD, sum), .N), by=x, .SDcols=c("x", "y", "z")]
+
+# Get the cumulative sum of column x and y while grouping by x and z > 8 such that the answer looks like the 
+# result that was stored in the variable desired_result_2.
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
+
+# Use chaining to get the maximum of both x and y by combining the result that was obtained in the previous 
+# instruction and group by by1.
+DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
+
+
+
+
 
 
 
