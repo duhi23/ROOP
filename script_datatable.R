@@ -4,259 +4,79 @@
 
 # 1) Novice
 
+# Welcome to the interactive exercises part of your data.table course. Here you will learn the ins and outs 
+# of working with the data.table package.
+# While most of the material is covered by Matt and Arun in the videos, you will sometimes need to show some 
+# street smartness and inventiveness. Remember that before using the hint you can always have a look at the 
+# official documentation by typing ?data.table in the console.
+# Let us start with some warming-up exercises on the topics that were covered in this first section. For this 
+# first exercise you may need to watch the video again at point 03:03 to find out how to create integer columns 
+# and notice the use of c() to create vectors. Click the video button on the bottom left. By now you realise 
+# you must watch the video very carefully and keep up :) You can also flick through the slides by pressing the 
+# slides button.
+
 library("data.table")
 
-# Create your first data.table 
+# Create a data.table my_first_data_table with a column x = c("a","b","c","d","e") and a column y = c(1,2,3,4,5). 
+# Use data.table().
 my_first_data_table <- data.table(x = c("a","b","c","d","e"), y = c(1,2,3,4,5))
 
-# Create a data.table using recycling
+# Create a two-column data.table DT that contains the four integers 1,2,1,2 in the first column a and the letters 
+# A,B,C,D in the second column b. Use recycling.
 DT <- data.table(a = 1:2, b = c("A", "B", "C", "D"))
 
-# Print the third row to the console
+# Select the third row of DT and just print the result to the console.
 DT[3,]
 
-# Print the second and third row to the console, but do not use any comma at all
+# Select the second and third rows without using any comma at all and print the result to the console.
 DT[2:3]
 
-# Print the penultimate row of DT using `.N`
+# You can pass data.table to base R functions like head() and tail() that accept a data.frame. Also, keep in 
+# mind that the special symbol .N contains the number of rows. You can put this symbol inside square brackets.
+
+# Select the penultimate row of the table. Make use of .N for this.
 DT[.N-1]
 
-# Print the column names of DT, and number of rows and number of columns
+# Return the column names of the data.table.
 colnames(DT)
+
+# Return the number of rows and number of columns of the data.table.
 dim(DT)
 
 # Select row 2 twice and row 3, returning a data.table with three rows where row 2 is a duplicate of row 1.
 DT[c(2,2,3)]
 
-# The data.table DT is still loaded in your workspace
+# Just a small reminder: speak out loud and say "Take DT, subset rows using i, then calculate j grouped by by".
+# In the video, the second argument j was covered. j can be used to select columns by wrapping the column names 
+# in .(). In addition to selecting columns, you can also call functions on them as if the columns were variables.
 
-# Print the penultimate row of DT using `.N`
-DT[.N-1]
+# Create a subset columns B and C for rows 1 and 3, and print the result to the console.
+DT[c(1,3),.(B,C)]
 
-# Print the column names of DT, and number of rows and number of columns
-colnames(DT)
-dim(DT)
+# Assign to ans a data.table that contains two columns: B and val, where val is the product of A and C.
+ans <- DT[,.(B,val=A*C)]
 
-# Select row 2 twice and row 3, returning a data.table with three rows where row 2 is a duplicate of row 1.
-DT[c(2,2,3)]
+# Assign to answ another data.table answ <- DT[, .(B, val = ____ )]. Fill in the blanks such that answ equals 
+# data.table(B=c("a", "b", "c", "d", "e", "a", "b", "c", "d", "e"), val = as.integer(c(6,7,8,9,10,1,2,3,4,5))).
+answ <- DT[, .(B, val = as.integer(c(6,7,8,9,10,1,2,3,4,5)))]
 
-library("data.table")
+# In this section you were introduced to the last of the main parts of the data.table syntax: by. It was explained 
+# that if you supply a j expression and a by list of expressions, the j expression is repeated for each by group. 
+# It is time to test your understanding, and to master the by argument via some hands-on examples and exercises.
+# First type iris and observe that all the rows are printed and that the column names scroll off the top of your 
+# screen. This is because iris is a data.frame. Use the scroll bar to scroll to the top to see the column names. 
+# Now convert iris to a data.table and store the result in DT. If you don't know how to convert, press the hint button.
+# Once you have turned it into a data.table, you are ready to start using its functionalities…
 
-# iris as data.table
+# Convert the iris dataset to a data.table DT.
 DT <- as.data.table(iris)
 
-# mean `Sepal.Length`
+# For each Species, what is the mean Sepal.Length? Do not provide a name for the newly created column.
 DT[,mean(Sepal.Length),by=Species]
 
-# Group by the first letter
+# Do exactly the same as in the instruction above, but this time group by the first letter of the Species name instead.
 DT[,mean(Sepal.Length),by=substring(Species, 1, 1)]
 
-library("data.table")
-# The data.table DT is still loaded in your workspace
-
-# Group the specimens by Sepal area (to the nearest 10 cm2) and count how many occur in each group.
-DT[,.N, by=10*round(Sepal.Length*Sepal.Width/10)]
-
-# Now name the output columns `Area` and `Count`
-DT[,.(Count=.N), by=.(Area=10*round(Sepal.Length*Sepal.Width/10))]  
-
-library("data.table")
-
-# The data.table DT
-set.seed(1L)
-DT <- data.table(A=rep(letters[2:1], each=4L), B=rep(1:4, each=2L), C=sample(8))
-
-# DT2
-DT2 <- DT[, .(C=cumsum(C)), by=.(A,B)]
-
-# Now the last two values per grouping in A from C in DT2 while you group by A
-DT2[, .(C=tail(C,2)), by=A] 
-
-library("data.table")
-
-# The data.table DT
-set.seed(1L)
-DT <- data.table(A=rep(letters[2:1], each=4L), B=rep(1:4, each=2L), C=sample(8))
-
-# DT2
-DT2 <- DT[, .(C=cumsum(C)), by=.(A,B)]
-
-# Now the last two values per grouping in A from C in DT2 while you group by A
-DT2[, .(C=tail(C,2)), by=A] 
-
-# Get the median of all the four columns Sepal.Length, Sepal.Width, Petal.Length and Petal.Width while 
-# you group by Species. Give them the same names. Next, order Species in descending order using chaining.
-
-DT <- data.table(iris)
-
-DT[, .(Sepal.Length=median(Sepal.Length), Sepal.Width=median(Sepal.Width), Petal.Length=median(Petal.Length), Petal.Width=median(Petal.Width)), by=Species][order(Species, decreasing = TRUE)]
-
-# Mean of columns
-
-DT[, lapply(.SD, mean), by=x]
-
-# Median of columns
-DT[, lapply(.SD, median), by=x]
-
-# Calculate the sum of the Q columns
-DT[, lapply(.SD, sum), .SDcols=2:4]
-
-# Calculate the sum of columns H1 and H2 
-DT[,lapply(.SD,sum), .SDcols=paste0("H",1:2)]
-
-# Select all but the first row of groups 1 and 2, returning only the grp column and the Q columns. 
-DT[,.SD[-1], by=grp, .SDcols=paste0("Q",1:3)]
-
-
-
-# The data.table DT is loaded in your workspace
-desired_result_1
-desired_result_2
-
-# Sum of all columns and the number of rows
-DT[, c(lapply(.SD, sum), .N), by=x, .SDcols=c("x", "y", "z")]
-
-# Cumulative sum of column `x` and `y` while grouping by `x` and `z > 8`
-DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
-
-# Chaining
-DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
-
-
-
-# The data.table DT is loaded in your workspace
-desired_result_1
-desired_result_2
-
-# Sum of all columns and the number of rows
-DT[, c(lapply(.SD, sum), .N), by=x, .SDcols=c("x", "y", "z")]
-
-# Cumulative sum of column `x` and `y` while grouping by `x` and `z > 8`
-DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
-
-# Chaining
-DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
-
-
-
-# The data.table DT is loaded in your workspace
-desired_result_1
-desired_result_2
-
-# Sum of all columns and the number of rows
-DT[, c(lapply(.SD, sum), .N), by=x, .SDcols=c("x", "y", "z")]
-
-# Cumulative sum of column `x` and `y` while grouping by `x` and `z > 8`
-DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
-
-# Chaining
-DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
-
-
-set.seed(1)
-
-# Check the DT that is made available to you
-DT
-
-# For loop with set
-for (j in 2:4) {set(DT, j=j, i = sample(1:10, size=3), value = NA)}
-
-# Change the column names to lowercase
-setnames(DT, names(DT), tolower(names(DT)))
-
-# Print the new DT to the console so we can check your answer
-DT
-
-
-DT <- data.table(a=letters[c(1,1,1,2,2)], b=1)
-
-# Postfix "_2"
-setnames(DT, names(DT), paste0(names(DT), "_2"))
-
-# "a_2" to "A2"
-setnames(DT, "a_2", "A2")
-
-# Reversing order
-setcolorder(DT, c("b_2", "A2"))
-
-
-DT <- data.table(a=letters[c(1,1,1,2,2)], b=1)
-
-# Postfix "_2"
-setnames(DT, names(DT), paste0(names(DT), "_2"))
-
-# "a_2" to "A2"
-setnames(DT, "a_2", "A2")
-
-# Reversing order
-setcolorder(DT, c("b_2", "A2"))
-
-
-# The data.table iris is already loaded in your workspace
-iris
-
-# Area is greater than 20 square centimeters
-iris[Length*Width > 20]
-
-# Add new boolean column
-iris[,IsLarge:=Length*Width > 20]
-
-# Now select rows again where the area is greater than 20 square centimeters
-iris[IsLarge==TRUE]
-
-
-# This is your data.table `DT`. The keys are set to `A` and `B`
-DT <- data.table(A=letters[c(2,1,2,3,1,2,3)], B=c(5,4,1,9,8,8,6), C=6:12)
-setkey(DT,A,B)
-
-# Select the `b` group
-DT["b"] 
-
-# `b` and `c` groups
-DT[c("b","c")]
-
-# The first row of the `b` and `c` group
-DT[c("b","c"), mult="first"]
-
-# `by=.EACHI` and `.SD` 
-DT[c("b","c"), .SD[c(1,.N)], by=.EACHI]
-
-# Print out all the data in the two groups before you return the first and last row of each group again.  Use {} and .N 
-DT[c("b","c"), {print(.SD);.SD[c(1,.N)]}, by=.EACHI]
-
-
-# The data.table DT is still loaded in your workspace
-library("data.table")
-
-# Key of `DT`
-key(DT)
-
-# Row where  `A=="b"` & `B==6`
-DT[.("b",6)]
-
-# Return the prevailing row
-DT[.("b",6), roll=TRUE]
-
-# Nearest one
-DT[.("b",6), roll="nearest"]
-
-
-# The data.table DT is still loaded in your workspace
-
-
-# Look at the sequence (-2):10 for the `b` group
-DT[.("b",(-2):10)]
-
-# Carry the prevailing values forwards
-DT[.("b",(-2):10),  roll=TRUE]
-
-# Carry the first observation backwards
-DT[.("b",(-2):10), roll=TRUE, rollends=TRUE]
-# or
-DT[.("b",(-2):10), roll = TRUE, rollends= c(TRUE,TRUE)]
-
-# Roll for a distance of 2
-DT[.("b",(-2):10), roll=2]
 
 
 
