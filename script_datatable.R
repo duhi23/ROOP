@@ -175,6 +175,69 @@ DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=c("x", "y")]
 DT[, lapply(.SD, cumsum),by=.(by1=x, by2=z>8), .SDcols=1:2][, lapply(.SD, max), by=by1, .SDcols=c("x", "y")]
 
 
+# As you now know, := is defined for use in j only, and there are two ways of using it. The first is the 
+# LHS := RHS form, where LHS is a character vector of column names and RHS is the corresponding value 
+# (Note: LHS stands for Left Hand Side and RHS stands for Right Hand side in what follows).
+# This first exercise will thoroughly test your understanding of this first way. So it is time for you to 
+# show off your knowledge!
+
+# Add a column Totalby reference containing sum(B) for each group in column A.
+DT[, Total:=sum(B), by=A]
+
+# Add 1 to column B just in rows 2 and 4.
+DT[c(2,4), `:=` (B=B+1)]
+
+# Add a new column Total2 that contains sum(B) grouped by A but just over rows 2,3 and 4.
+DT[2:4, Total2:=sum(B), by=A]
+
+# Remove the Total column
+DT[, Total:=NULL]
+
+# By the way, the R function [[ is useful to select a single column by name or number with the result returned 
+# as a vector. Use [[ to select the third column.
+DT[[3]]
+
+# The second way to use := is a function form. The nice thing about a function form is that you can get each 
+# right hand side (RHS) alongside the left hand side (LHS) so it is easier to read.
+
+# Update B with B+1 and add a new column C with A+B, and D with constant 2.
+DT[, `:=`(B=B+1,  C=A+B, D=2)]
+
+# Given myCols = c("B","C"), delete those columns.
+myCols = c("B","C")
+DT[, (myCols):=NULL]  
+
+# Delete column D by its number (2) rather than its name (D).
+DT[, 2 := NULL]
+
+# In the following two exercises, you will focus on the usage of set() and its siblings. Remember that set() 
+# can not do grouped operations.
+
+# Loop through columns 2,3 and 4, and for each one select 3 rows at random and set the value of that column to NA.
+for (j in 2:4) {set(DT, j=j, i = sample(1:10, size=3), value = NA)}
+
+# Change the column names to lower case. When setnames() is passed just one input vector, that needs to be all 
+# the new names.
+setnames(DT, names(DT), tolower(names(DT)))
+
+# A wrap up of the set-family:
+# set() is a loopable low overhead version of := 
+# You can use setnames() to set or change column names
+# setcolorder() lets you reorder the columns of a data.table
+
+DT <- data.table(a=letters[c(1,1,1,2,2)], b=1)
+
+# Add a postfix "_2" to all column names.
+setnames(DT, names(DT), paste0(names(DT), "_2"))
+
+# Change "a_2" to "A2" by names not position.
+setnames(DT, "a_2", "A2")
+
+# To end, reverse the order of the columns.
+setcolorder(DT, c("b_2", "A2"))
+
+
+# 3) Expert
 
 
 
