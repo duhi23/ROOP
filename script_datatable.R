@@ -77,9 +77,32 @@ DT[,mean(Sepal.Length),by=Species]
 # Do exactly the same as in the instruction above, but this time group by the first letter of the Species name instead.
 DT[,mean(Sepal.Length),by=substring(Species, 1, 1)]
 
+# We saw earlier that .N can be used in i and that it designates the number of rows in DT. There, it is typically 
+# used for returning the last row or an offset from it. .N can be used in j too and designates the number of rows 
+# in this group. The latter is especially powerful when you can use it in combination with by.
 
+# Group the specimens by Sepal area (to the nearest 10 cm2) and count how many occur in each group.
+DT[,.N, by=10*round(Sepal.Length*Sepal.Width/10)]
 
+# Using the answer to the above question, you can now name the group Area and the count Count.
+DT[,.(Count=.N), by=.(Area=10*round(Sepal.Length*Sepal.Width/10))]
 
+# In the previous exercises we returned single numbers in j. However, this is not necessary, because you do not 
+# have to return only single numbers in j. Let us experiment with this via a new data.table DT .
+
+# The data.table DT
+set.seed(1L)
+DT <- data.table(A=rep(letters[2:1], each=4L), B=rep(1:4, each=2L), C=sample(8))
+
+# Given DT, calculate cumulative sum of C in column C while you group by A,B. Store it in a new data.table DT2 
+# with 3 columns A,B and C.
+DT2 <- DT[, .(C=cumsum(C)), by=.(A,B)]
+
+# Select from DT2, the last two values of C in column C while you group by A alone. Make sure the column names 
+# won't change.
+DT2[, .(C=tail(C,2)), by=A] 
+
+# 2) Yeoman
 
 
 
